@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export type Player = { id: string; name: string };
+export type Player = { id: string; name: string; avatar?: string };
 
 const STORAGE_KEY = "zebi-games:players";
 
