@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function PlayersPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-6">
+    <main className="min-h-screen flex items-center justify-center p-6">
       <section className="w-full max-w-3xl">
         <div className="rounded-2xl border border-slate-200 bg-white/70 backdrop-blur p-8 shadow-lg">
           <header className="text-center space-y-2 mb-6">

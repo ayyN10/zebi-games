@@ -1,6 +1,8 @@
 "use client";
 
 import type { Player } from "../_lib/usePlayers";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export default function PlayerList({
   players,
@@ -26,7 +28,7 @@ export default function PlayerList({
             onClick={() => onDelete(p.id)}
             className="text-sm text-red-600 hover:text-red-700 font-medium"
           >
-            Supprimer
+            <FontAwesomeIcon icon={faTrash} />
           </button>
         </li>
       ))}

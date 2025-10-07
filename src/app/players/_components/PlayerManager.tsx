@@ -3,6 +3,8 @@
 import PlayerForm from "./PlayerForm";
 import PlayerList from "./PlayerList";
 import usePlayers from "../_lib/usePlayers";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export default function PlayerManager() {
   const { players, addPlayer, removePlayer, clearPlayers } = usePlayers();
@@ -18,9 +20,9 @@ export default function PlayerManager() {
         {players.length > 0 && (
           <button
             onClick={clearPlayers}
-            className="text-sm px-3 py-1.5 rounded-md border border-slate-200 hover:bg-slate-50 transition"
+            className="text-sm px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 transition"
           >
-            Supprimer tout
+            <FontAwesomeIcon icon={faTrash} />
           </button>
         )}
       </div>
