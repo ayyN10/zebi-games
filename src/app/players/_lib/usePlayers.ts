@@ -24,15 +24,15 @@ export default function usePlayers() {
     } catch {}
   }, [players]);
 
-  const addPlayer = (name: string) => {
+  const addPlayer = (name: string, avatar?: string) => {
     const id =
       typeof crypto !== "undefined" && "randomUUID" in crypto
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    setPlayers((prev) => [...prev, { id, name: name.trim() }]);
+    setPlayers((prev) => [...prev, { id, name: name.trim(), avatar }]);
   };
 
-  const removePlayer = (id: string) => {
+  const removePlayer = (id: string, avatar?: string) => {
     setPlayers((prev) => prev.filter((p) => p.id !== id));
   };
 
