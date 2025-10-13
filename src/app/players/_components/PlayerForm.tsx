@@ -60,7 +60,7 @@ export default function PlayerForm({ onAdd }: { onAdd: (name: string, avatar?: s
           setAvatarFile(file);
           setAvatarPreview(URL.createObjectURL(file));
         }}
-        className="sr-only"
+        className="sr-only text-black"
       />
 
       {/* Clickable avatar circle with edit pictogram */}
@@ -88,7 +88,7 @@ export default function PlayerForm({ onAdd }: { onAdd: (name: string, avatar?: s
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Nom du joueur"
-        className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        className="flex-1 rounded-lg border border-slate-200 text-black bg-white px-4 py-2.5 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
       />
       <button
         type="submit"
