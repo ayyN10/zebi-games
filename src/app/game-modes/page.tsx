@@ -12,7 +12,7 @@ export default function Home() {
           </header>
 
           <div className="flex flex-col justify-center gap-4">
-            <Button href="/players" variant="primary">
+            <Button href="/betrayed-game" variant="primary">
               Qui veut te trahir ?
             </Button>
             <Button href="/game-modes" variant="secondary">
