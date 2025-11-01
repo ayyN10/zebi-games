@@ -1,24 +1,29 @@
 "use client";
 
 import type { Player } from "../../players/_lib/usePlayers";
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export default function PlayerList({
   players,
   onAddSips,
   onRemoveSips,
+  onDeletePlayer,
 }: {
   players: Player[];
   onAddSips?: (id: string, amount: number) => void;
   onRemoveSips?: (id: string, amount: number) => void;
+  onDeletePlayer?: (id: string) => void;
 }) {
   if (players.length === 0) {
     return (
       <div className="bg-slate-50 rounded-lg p-6 border border-slate-200">
         <p className="text-center text-slate-600">
           Aucun joueur ajouté. Rendez-vous sur la page{" "}
-          <a href="/players" className="text-indigo-600 hover:underline font-medium">
+          <Link href="/players" className="text-indigo-600 hover:underline font-medium">
             Joueurs
-          </a>
+          </Link>
           {" "}pour en ajouter.
         </p>
       </div>
@@ -34,8 +39,23 @@ export default function PlayerList({
         {players.map((player) => (
           <div
             key={player.id}
-            className="flex flex-col items-center gap-2 bg-white rounded-lg px-4 py-3 shadow-sm border border-green-200"
+            className="relative flex flex-col items-center gap-2 bg-white rounded-lg px-4 py-3 shadow-sm border border-green-200"
           >
+            {/* Bouton de suppression en haut à droite */}
+            {onDeletePlayer && (
+              <button
+                onClick={() => {
+                  if (confirm(`Êtes-vous sûr de vouloir supprimer ${player.name} ?`)) {
+                    onDeletePlayer(player.id);
+                  }
+                }}
+                className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white hover:bg-red-600 transition shadow-md flex items-center justify-center"
+                title={`Supprimer ${player.name}`}
+              >
+                <FontAwesomeIcon icon={faTrash} className="text-xs" />
+              </button>
+            )}
+
             <div className="flex items-center gap-2">
               {player.avatar ? (
                 <img

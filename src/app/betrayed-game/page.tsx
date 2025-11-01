@@ -1,11 +1,46 @@
 "use client";
 
+import { useState } from "react";
 import usePlayers from "../players/_lib/usePlayers";
 import PlayerList from "./_components/PlayerList";
+import DistribtionSip from "./_components/DistrubitionSip";
+import SettingGame from "./_components/SettingGame";
+import Button from "@/components/ui/Button";
 
 export default function BetrayedGamePage() {
-  const { players } = usePlayers();
-  
+  const { players, addSips, removeSips, resetAllSips, removePlayer } = usePlayers();
+  const [gameStarted, setGameStarted] = useState(false);
+  const [numTours, setNumTours] = useState(3);
+  const [sipsPerTurn, setSipsPerTurn] = useState(1);
+
+  const handleStartGame = () => {
+    if (players.length < 2) {
+      alert("Vous devez avoir au moins 2 joueurs pour commencer !");
+      return;
+    }
+    // Réinitialiser les gorgées au début de la partie
+    resetAllSips();
+    setGameStarted(true);
+  };
+
+  const handleEndGame = () => {
+    setGameStarted(false);
+  };
+
+  // Si la partie est lancée, afficher l'interface de jeu
+  if (gameStarted) {
+    return (
+      <DistribtionSip
+        players={players}
+        onAddSips={addSips}
+        onRemoveSips={removeSips}
+        onEndGame={handleEndGame}
+        onDeletePlayer={removePlayer}
+      />
+    );
+  }
+
+  // Sinon, afficher les règles
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
       <section className="w-full max-w-4xl">
@@ -20,9 +55,6 @@ export default function BetrayedGamePage() {
           </header>
 
           <div className="space-y-6 text-slate-700">
-
-
-            <PlayerList players={players} />
             {/* Règles principales */}
             <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-100">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">
@@ -66,6 +98,23 @@ export default function BetrayedGamePage() {
                   On ne va pas tout spoiler, ce serait moins drôle ! 😉
                 </li>
               </ul>
+            </div>
+
+            <PlayerList
+              players={players}
+              onDeletePlayer={removePlayer}
+            />
+
+            <SettingGame />
+
+            <div className="flex justify-center items-center">
+              <button
+                onClick={handleStartGame}
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg transition-colors bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={players.length < 2}
+              >
+                {players.length < 2 ? "Ajoutez au moins 2 joueurs" : "Commencer la partie !"}
+              </button>
             </div>
           </div>
         </div>
