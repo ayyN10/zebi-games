@@ -1,93 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Player } from "../../players/_lib/usePlayers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-export default function GameInterface({
-  players,
-  onAddSips,
-  onEndGame,
-  onDeletePlayer,
-  maxRounds,
-  sipsPerRound,
-}: {
+interface Props {
   players: Player[];
-  onAddSips: (id: string, amount: number) => void;
-  onRemoveSips: (id: string, amount: number) => void;
-  onEndGame: () => void;
-  onDeletePlayer?: (id: string) => void;
+  currentPlayer: Player;
+  currentRound: number;
   maxRounds: number;
+  sipsDistributed: number;
   sipsPerRound: number;
-}) {
-  const [currentRound, setCurrentRound] = useState(1);
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  onDistribute: (targetId: string) => void;
+}
+
+export default function DistribtionSip({
+  players,
+  currentPlayer,
+  currentRound,
+  maxRounds,
+  sipsDistributed,
+  sipsPerRound,
+  onDistribute,
+}: Props) {
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
-  const [sipsDistributed, setSipsDistributed] = useState(0);
 
-  // Ajuster l'index si un joueur est supprimé
-  useEffect(() => {
-    if (players.length === 0) {
-      onEndGame();
-      return;
-    }
-    if (currentPlayerIndex >= players.length) {
-      setCurrentPlayerIndex(0);
-    }
-  }, [players.length, currentPlayerIndex, onEndGame]);
-
-  const currentPlayer = players[currentPlayerIndex];
-
-  const handleDistributeSip = () => {
+  const handleDistribute = () => {
     if (!selectedTarget) {
       alert("Sélectionnez un joueur ou vous-même !");
       return;
     }
-
-    onAddSips(selectedTarget, 1);
-    const newSipsDistributed = sipsDistributed + 1;
-    setSipsDistributed(newSipsDistributed);
-
-    // Si toutes les gorgées du tour sont distribuées
-    if (newSipsDistributed >= sipsPerRound) {
-      setSipsDistributed(0);
-
-      // Passer au joueur suivant
-      const nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
-
-      // Si on revient au premier joueur, passer au tour suivant
-      if (nextPlayerIndex === 0) {
-        const nextRound = currentRound + 1;
-
-        // Si le nombre max de tours est atteint, fin de partie
-        if (nextRound > maxRounds) {
-          alert(`Partie terminée ! ${maxRounds} tours joués.`);
-          onEndGame();
-          return;
-        }
-
-        setCurrentRound(nextRound);
-      }
-
-      setCurrentPlayerIndex(nextPlayerIndex);
-    }
-
+    onDistribute(selectedTarget);
     setSelectedTarget(null);
   };
-
-  const handleDeletePlayer = (id: string, name: string) => {
-    if (!onDeletePlayer) return;
-
-    if (confirm(`Êtes-vous sûr de vouloir retirer ${name} de la partie ?`)) {
-      onDeletePlayer(id);
-      setSelectedTarget(null);
-    }
-  };
-
-  if (!currentPlayer) {
-    return null;
-  }
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
@@ -137,10 +81,6 @@ export default function GameInterface({
                       </div>
                     )}
                     <span className="font-medium text-slate-800">{player.name}</span>
-                    <span className="text-sm text-slate-600">
-                      🍺{" "}
-                      {player.sips || 0} gorgée{(player.sips || 0) !== 1 ? "s" : ""}
-                    </span>
                   </button>
                 </div>
               ))}
@@ -149,17 +89,11 @@ export default function GameInterface({
             {/* Boutons d'action */}
             <div className="flex gap-4 justify-center">
               <button
-                onClick={handleDistributeSip}
+                onClick={handleDistribute}
                 disabled={!selectedTarget}
                 className="rounded-lg bg-indigo-600 text-white px-8 py-3 font-medium hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Distribuer la gorgée ({sipsDistributed + 1}/{sipsPerRound})
-              </button>
-              <button
-                onClick={onEndGame}
-                className="rounded-lg bg-slate-600 text-white px-8 py-3 font-medium hover:bg-slate-700 transition"
-              >
-                Terminer la partie
+                Distribuer la gorgée
               </button>
             </div>
           </div>

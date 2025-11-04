@@ -6,19 +6,29 @@ import PlayerList from "./_components/PlayerList";
 import DistribtionSip from "./_components/DistrubitionSip";
 import SettingGame from "./_components/SettingGame";
 import Button from "@/components/ui/Button";
+import { useGameManager } from "./_lib/useGameManager";
+import MiniGame from "./_components/MiniGame";
+import AccusationPhase from "./_components/AccusationPhase";
+import ResultOfDistrubition from "./_components/ResultOfDistrubition";
 
 export default function BetrayedGamePage() {
   const { players, addSips, removeSips, resetAllSips, removePlayer } = usePlayers();
   const [gameStarted, setGameStarted] = useState(false);
-  const [numTours, setNumTours] = useState(3);
+  const [numTours, setNumTours] = useState(1);
   const [sipsPerTurn, setSipsPerTurn] = useState(1);
+
+  const gameManager = useGameManager({
+    maxRounds: numTours,
+    sipsPerRound: sipsPerTurn,
+    players,
+    onAddSips: addSips,
+  });
 
   const handleStartGame = () => {
     if (players.length < 2) {
       alert("Vous devez avoir au moins 2 joueurs pour commencer !");
       return;
     }
-    // Réinitialiser les gorgées au début de la partie
     resetAllSips();
     setGameStarted(true);
   };
@@ -27,15 +37,70 @@ export default function BetrayedGamePage() {
     setGameStarted(false);
   };
 
-  // Si la partie est lancée, afficher l'interface de jeu
-  if (gameStarted) {
+  // Si la partie est terminée
+  if (gameStarted && gameManager.isGameEnded) {
+    return (
+      <main className="min-h-screen flex items-center justify-center p-6">
+        <div className="text-center space-y-6">
+          <h1 className="text-4xl font-bold">🎉 Partie terminée !</h1>
+          <p className="text-xl">Bravo à tous les joueurs !</p>
+          <button
+            onClick={handleEndGame}
+            className="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700"
+          >
+            Retour au menu
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  // Si on est dans la phase de résultats
+  if (gameStarted && gameManager.currentPhase === 'results') {
+    return (
+      <ResultOfDistrubition
+        players={players}
+        results={gameManager.formattedResults}
+        onContinue={gameManager.handleResultsContinue}
+      />
+    );
+  }
+
+  // Si on est dans la phase d'accusation
+  if (gameStarted && gameManager.currentPhase === 'accusation') {
+    return (
+      <AccusationPhase
+        players={players}
+        currentAccuser={gameManager.currentAccuser}
+        onAccuse={gameManager.handleAccusation}
+      />
+    );
+  }
+
+  // Si on est dans un mini-jeu
+  if (gameStarted && gameManager.currentPhase === 'minigame') {
+    return (
+      <MiniGame
+        miniGameType={gameManager.miniGameType}
+        players={players}
+        currentRound={gameManager.currentRound}
+        onComplete={gameManager.handleMinigameComplete}
+        onSkip={gameManager.handleSkipMinigame}
+      />
+    );
+  }
+
+  // Si la partie est lancée - phase de distribution
+  if (gameStarted && gameManager.currentPhase === 'distribution') {
     return (
       <DistribtionSip
         players={players}
-        onAddSips={addSips}
-        onRemoveSips={removeSips}
-        onEndGame={handleEndGame}
-        onDeletePlayer={removePlayer}
+        currentPlayer={gameManager.currentPlayer}
+        currentRound={gameManager.currentRound}
+        maxRounds={numTours}
+        sipsDistributed={gameManager.sipsDistributed}
+        sipsPerRound={sipsPerTurn}
+        onDistribute={gameManager.handleDistributeSip}
       />
     );
   }
@@ -105,7 +170,12 @@ export default function BetrayedGamePage() {
               onDeletePlayer={removePlayer}
             />
 
-            <SettingGame />
+            <SettingGame
+              numTours={numTours}
+              sipsPerTurn={sipsPerTurn}
+              onNumToursChange={setNumTours}
+              onSipsPerTurnChange={setSipsPerTurn}
+            />
 
             <div className="flex justify-center items-center">
               <button

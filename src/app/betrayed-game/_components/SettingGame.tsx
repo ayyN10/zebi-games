@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+interface Props {
+  numTours: number;
+  sipsPerTurn: number;
+  onNumToursChange: (value: number) => void;
+  onSipsPerTurnChange: (value: number) => void;
+}
 
-export default function SettingGame() {
-  const [numTours, setNumTours] = useState(1);
-  const [sipsPerTurn, setSipsPerTurn] = useState(1);
-
+export default function SettingGame({
+  numTours,
+  sipsPerTurn,
+  onNumToursChange,
+  onSipsPerTurnChange,
+}: Props) {
   return (
     <div className="bg-purple-50 rounded-lg p-6 border border-purple-100">
       <h2 className="text-2xl font-bold text-slate-900 mb-4">
@@ -19,7 +26,7 @@ export default function SettingGame() {
           </label>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setNumTours(Math.max(1, numTours - 1))}
+              onClick={() => onNumToursChange(Math.max(1, numTours - 1))}
               className="w-8 h-8 rounded bg-purple-200 hover:bg-purple-300 transition font-bold"
             >
               −
@@ -27,12 +34,12 @@ export default function SettingGame() {
             <input
               type="number"
               value={numTours}
-              onChange={(e) => setNumTours(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={(e) => onNumToursChange(Math.max(1, parseInt(e.target.value) || 1))}
               className="w-full rounded border border-purple-200 px-3 py-2 text-center font-medium"
               min="1"
             />
             <button
-              onClick={() => setNumTours(numTours + 1)}
+              onClick={() => onNumToursChange(numTours + 1)}
               className="w-8 h-8 rounded bg-purple-200 hover:bg-purple-300 transition font-bold"
             >
               +
@@ -47,7 +54,7 @@ export default function SettingGame() {
           </label>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setSipsPerTurn(Math.max(1, sipsPerTurn - 1))}
+              onClick={() => onSipsPerTurnChange(Math.max(1, sipsPerTurn - 1))}
               className="w-8 h-8 rounded bg-purple-200 hover:bg-purple-300 transition font-bold"
             >
               −
@@ -55,12 +62,12 @@ export default function SettingGame() {
             <input
               type="number"
               value={sipsPerTurn}
-              onChange={(e) => setSipsPerTurn(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={(e) => onSipsPerTurnChange(Math.max(1, parseInt(e.target.value) || 1))}
               className="w-full rounded border border-purple-200 px-3 py-2 text-center font-medium"
               min="1"
             />
             <button
-              onClick={() => setSipsPerTurn(sipsPerTurn + 1)}
+              onClick={() => onSipsPerTurnChange(sipsPerTurn + 1)}
               className="w-8 h-8 rounded bg-purple-200 hover:bg-purple-300 transition font-bold"
             >
               +
@@ -68,9 +75,6 @@ export default function SettingGame() {
           </div>
         </div>
       </div>
-      <p className="text-sm text-slate-600 mt-4">
-        💡 Résumé : {numTours} tour{numTours > 1 ? "s" : ""} × {sipsPerTurn} gorgée{sipsPerTurn > 1 ? "s" : ""} par tour
-      </p>
     </div>
   );
 }
