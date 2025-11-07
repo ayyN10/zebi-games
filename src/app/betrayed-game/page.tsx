@@ -29,11 +29,12 @@ export default function BetrayedGamePage() {
       alert("Vous devez avoir au moins 2 joueurs pour commencer !");
       return;
     }
-    resetAllSips();
+    // Ne plus réinitialiser les gorgées au début : on garde les compteurs pendant la partie
     setGameStarted(true);
   };
 
   const handleEndGame = () => {
+    // Réinitialiser les gorgées uniquement à la fin de la partie
     setGameStarted(false);
   };
 

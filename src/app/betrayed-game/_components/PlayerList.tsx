@@ -85,7 +85,7 @@ export default function PlayerList({
                 </button>
               )}
               <span className="text-sm font-medium min-w-[60px] text-center">
-                🍺 {player.sips || 0}
+                🍺 {player.sips}
               </span>
               {onAddSips && (
                 <button

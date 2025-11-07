@@ -59,15 +59,13 @@ export function useGameManager({
     const playersMap = new Map<string, { player: Player; receivedSips: number }>();
 
     gameState.distributions.forEach(dist => {
-      if (dist.from !== dist.to) { // Ne compte pas si le joueur s'est donné à lui-même
-        const existing = playersMap.get(dist.to);
-        if (existing) {
-          existing.receivedSips += dist.amount;
-        } else {
-          const player = players.find(p => p.id === dist.to);
-          if (player) {
-            playersMap.set(dist.to, { player, receivedSips: dist.amount });
-          }
+      const existing = playersMap.get(dist.to);
+      if (existing) {
+        existing.receivedSips += dist.amount;
+      } else {
+        const player = players.find(p => p.id === dist.to);
+        if (player) {
+          playersMap.set(dist.to, { player, receivedSips: dist.amount });
         }
       }
     });
@@ -245,8 +243,9 @@ export function useGameManager({
         currentPhase: 'distribution',
         sipsDistributed: 0,
         miniGameType: 'none',
-        distributions: [], // Réinitialiser les distributions
+        distributions: [], // Réinitialiser uniquement les distributions du tour
         accusationIndex: 0,
+        accusationResults: [], // Réinitialiser les résultats d'accusation
       };
     });
   }, [maxRounds]);
