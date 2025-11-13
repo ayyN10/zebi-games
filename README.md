@@ -1,36 +1,193 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎮 Zebi Games
 
-## Getting Started
+Application de jeux sociaux développée avec Next.js, TypeScript et Tailwind CSS.
 
-First, run the development server:
+## 🚀 Getting Started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez [http://localhost:3000](http://localhost:3000) pour voir l'application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Jeux Disponibles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. 🎭 Betrayed Game - "Qui veut te trahir ?"
 
-## Learn More
+Jeu de traîtrise et de déduction avec mini-jeux intégrés entre chaque tour.
 
-To learn more about Next.js, take a look at the following resources:
+**Mini-jeux inclus:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 🎭 Le Traître Unique
+- 📢 J'annonce
+- 🕵️ L'Imposteur
+- 🗳️ Vote Collectif
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. 🎮 Find Game
 
-## Deploy on Vercel
+Devinez le jeu vidéo à partir d'indices.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. 👥 Players Management
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Gestion des joueurs pour tous les jeux.
+
+## 📚 Documentation
+
+### 📖 Documentation Principale
+
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Architecture complète du projet
+- **[SUMMARY.md](./SUMMARY.md)** - Résumé visuel du système
+- **[CHANGELOG.md](./CHANGELOG.md)** - Liste des changements
+
+### 🚀 Guides Rapides
+
+- **[QUICK_START.md](./QUICK_START.md)** - Guide pour ajouter un mini-jeu en 4 étapes
+
+### 🎮 Documentation Spécifique
+
+- **[Mini-Games README](./src/app/betrayed-game/_lib/minigames/README.md)** - Documentation technique des mini-jeux
+
+## 🏗️ Architecture
+
+Le projet utilise une architecture modulaire avec des patterns de design professionnels:
+
+```
+src/
+├── app/
+│   ├── betrayed-game/          # Jeu principal avec mini-jeux
+│   │   ├── _lib/
+│   │   │   ├── minigames/      # Système extensible de mini-jeux
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── registry.ts
+│   │   │   │   └── games/
+│   │   │   └── useGameManager.ts
+│   │   └── _components/
+│   ├── find-game/              # Jeu de devinettes
+│   ├── players/                # Gestion des joueurs
+│   └── game-modes/             # Sélection des modes
+└── components/
+    └── ui/                     # Composants réutilisables
+```
+
+## 🎨 Technologies
+
+- **Framework:** Next.js 15+ (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **State Management:** React Hooks
+- **Patterns:** Registry, Strategy, Factory, Observer
+
+## 🔧 Fonctionnalités Clés
+
+### ✨ Système de Mini-Jeux Extensible
+
+- Architecture modulaire et type-safe
+- Ajout de nouveaux jeux en 4 étapes simples
+- Sélection aléatoire pondérée
+- Filtrage automatique selon le nombre de joueurs
+
+### 🎯 Gestion des Joueurs
+
+- Ajout/suppression dynamique
+- Compteur de gorgées
+- Persistance locale
+
+### 🎮 Modes de Jeu
+
+- Multiple game modes disponibles
+- Navigation intuitive
+- UI/UX cohérente
+
+## 📦 Structure du Projet
+
+```
+zebi-games/
+├── src/
+│   ├── app/                    # Pages Next.js (App Router)
+│   └── components/             # Composants réutilisables
+├── public/                     # Assets statiques
+├── ARCHITECTURE.md             # Documentation architecture
+├── QUICK_START.md             # Guide rapide
+├── SUMMARY.md                 # Résumé visuel
+└── CHANGELOG.md               # Changements
+```
+
+## 🚀 Ajouter un Mini-Jeu
+
+Consultez [QUICK_START.md](./QUICK_START.md) pour un guide détaillé en 4 étapes.
+
+**Résumé rapide:**
+
+1. Créer le composant dans `games/`
+2. Ajouter le type dans `types.ts`
+3. Exporter dans `games/index.ts`
+4. Enregistrer dans `registry.ts`
+
+## 🧪 Scripts Disponibles
+
+```bash
+npm run dev          # Démarrer le serveur de développement
+npm run build        # Build pour production
+npm run start        # Démarrer en production
+npm run lint         # Linter le code
+```
+
+## 📝 Bonnes Pratiques
+
+- ✅ Types TypeScript stricts
+- ✅ Composants réutilisables
+- ✅ Code modulaire et découplé
+- ✅ Documentation inline
+- ✅ Patterns de design professionnels
+
+## 🐛 Dépannage
+
+### Le projet ne démarre pas
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
+```
+
+### Erreurs TypeScript
+
+```bash
+# Supprimer le cache Next.js
+rm -rf .next
+npm run dev
+```
+
+## 📈 Statistiques du Projet
+
+- **Lignes de code:** ~2500+
+- **Composants:** 20+
+- **Mini-jeux:** 4
+- **Pages de documentation:** 4
+- **Types TypeScript:** 15+
+
+## 🤝 Contribution
+
+Pour contribuer:
+
+1. Consultez [ARCHITECTURE.md](./ARCHITECTURE.md)
+2. Suivez les patterns existants
+3. Documentez vos changements
+4. Testez votre code
+
+## 📄 License
+
+Ce projet est sous licence MIT.
+
+## 🎉 Crédits
+
+- **Framework:** Next.js
+- **Styling:** Tailwind CSS
+- **Architecture:** Design patterns professionnels
+
+---
+
+**Made with ❤️ by the Zebi Games Team**
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).

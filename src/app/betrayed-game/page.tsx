@@ -7,7 +7,7 @@ import DistribtionSip from "./_components/DistrubitionSip";
 import SettingGame from "./_components/SettingGame";
 import Button from "@/components/ui/Button";
 import { useGameManager } from "./_lib/useGameManager";
-import MiniGame from "./_components/MiniGame";
+import MiniGameOrchestrator from "./_components/MiniGameOrchestrator";
 import AccusationPhase from "./_components/AccusationPhase";
 import ResultOfDistrubition from "./_components/ResultOfDistrubition";
 
@@ -81,7 +81,7 @@ export default function BetrayedGamePage() {
   // Si on est dans un mini-jeu
   if (gameStarted && gameManager.currentPhase === 'minigame') {
     return (
-      <MiniGame
+      <MiniGameOrchestrator
         miniGameType={gameManager.miniGameType}
         players={players}
         currentRound={gameManager.currentRound}

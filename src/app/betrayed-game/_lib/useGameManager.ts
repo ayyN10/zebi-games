@@ -1,9 +1,11 @@
 import { useState, useCallback } from 'react';
 import type { Player } from '../../players/_lib/usePlayers';
+import { miniGameRegistry } from './minigames/registry';
+import type { MiniGameType, MiniGameResult } from './minigames/types';
 
 export type GamePhase = 'distribution' | 'accusation' | 'results' | 'minigame' | 'ended';
 
-export type MiniGameType = 'unique-traitor' | 'announce' | 'none';
+export type { MiniGameType };
 
 interface Distribution {
   from: string; // ID du joueur qui donne
@@ -81,43 +83,31 @@ export function useGameManager({
     const currentPlayerId = players[gameState.currentPlayerIndex].id;
 
     setGameState(prev => {
-      const newSipsDistributed = prev.sipsDistributed + 1;
-
-      // Enregistrer la distribution
+      // Enregistrer la distribution de TOUTES les gorgées du tour
       const newDistribution: Distribution = {
         from: currentPlayerId,
         to: targetId,
-        amount: 1,
+        amount: sipsPerRound, // Distribuer toutes les gorgées d'un coup
       };
 
-      // Si toutes les gorgées du tour sont distribuées
-      if (newSipsDistributed >= sipsPerRound) {
-        const nextPlayerIndex = (prev.currentPlayerIndex + 1) % players.length;
+      const nextPlayerIndex = (prev.currentPlayerIndex + 1) % players.length;
 
-        // Si on revient au premier joueur, fin du tour -> phase d'accusation
-        if (nextPlayerIndex === 0) {
-          return {
-            ...prev,
-            currentPhase: 'accusation',
-            sipsDistributed: 0,
-            distributions: [...prev.distributions, newDistribution],
-            accusationIndex: 0,
-          };
-        }
-
-        // Sinon, joueur suivant
+      // Si on revient au premier joueur, fin du tour -> phase d'accusation
+      if (nextPlayerIndex === 0) {
         return {
           ...prev,
-          currentPlayerIndex: nextPlayerIndex,
+          currentPhase: 'accusation',
           sipsDistributed: 0,
           distributions: [...prev.distributions, newDistribution],
+          accusationIndex: 0,
         };
       }
 
-      // Continuer la distribution
+      // Sinon, joueur suivant
       return {
         ...prev,
-        sipsDistributed: newSipsDistributed,
+        currentPlayerIndex: nextPlayerIndex,
+        sipsDistributed: 0,
         distributions: [...prev.distributions, newDistribution],
       };
     });
@@ -155,8 +145,8 @@ export function useGameManager({
       const accusedPlayer = players.find(p => p.id === accusedId);
       result = {
         playerId: accusingPlayer.id,
-        sipsToAdd: accusingPlayer.receivedSips || 0,
-        reason: `S'est trompé en accusant ${accusedPlayer?.name}`,
+        sipsToAdd: accusingPlayer.receivedSips * 2 || 0,
+        reason: `S'est trompé en accusant ${accusedPlayer?.name} ! (×2)`,
       };
     }
 
@@ -190,14 +180,14 @@ export function useGameManager({
       onAddSips(result.playerId, result.sipsToAdd);
     });
 
-    const miniGame = selectRandomMiniGame();
+    const miniGame = miniGameRegistry.selectRandomGame(players.length);
     setGameState(prev => ({
       ...prev,
       currentPhase: 'minigame',
       miniGameType: miniGame,
       accusationResults: [],
     }));
-  }, [gameState.accusationResults, onAddSips]);
+  }, [gameState.accusationResults, onAddSips, players.length]);
 
   // Obtenir les résultats formatés
   const getFormattedResults = useCallback(() => {
@@ -224,7 +214,12 @@ export function useGameManager({
   }, [gameState.accusationResults, players]);
 
   // Terminer un mini-jeu et passer au tour suivant
-  const handleMinigameComplete = useCallback(() => {
+  const handleMinigameComplete = useCallback((results: MiniGameResult[] = []) => {
+    // Appliquer les résultats du mini-jeu
+    results.forEach(result => {
+      onAddSips(result.playerId, result.sipsToAdd);
+    });
+
     setGameState(prev => {
       const nextRound = prev.currentRound + 1;
 
@@ -248,7 +243,7 @@ export function useGameManager({
         accusationResults: [], // Réinitialiser les résultats d'accusation
       };
     });
-  }, [maxRounds]);
+  }, [maxRounds, onAddSips]);
 
   // Passer le mini-jeu (optionnel)
   const handleSkipMinigame = useCallback(() => {
@@ -270,11 +265,4 @@ export function useGameManager({
     handleMinigameComplete,
     handleSkipMinigame,
   };
-}
-
-// Sélectionner un mini-jeu aléatoire
-function selectRandomMiniGame(): MiniGameType {
-  const miniGames: MiniGameType[] = ['unique-traitor', 'announce', 'none'];
-  const randomIndex = Math.floor(Math.random() * miniGames.length);
-  return miniGames[randomIndex];
 }
